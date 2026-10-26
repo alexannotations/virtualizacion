@@ -1,24 +1,27 @@
 # Docker Cheatsheet
 
 
-## Imágenes
+## Imágenes <a id="imagenes"></a>
 
 | Comando | Descripción |
 |---|---|
 | `docker build -t <nombre:tag> .` | Construye una imagen desde un Dockerfile en la carpeta actual |
 | `docker build -t <nombre:tag> . --no-cache` | Construye sin usar la caché |
 | `docker images` | Lista las imágenes locales |
-| `docker pull <imagen>` | Descarga una imagen desde un registro |
+| `docker images --filter=reference='*/*:*' --filter=reference='*:*'` | Filtra la lista de imagenes locales segun el criterio `usuario/repositorio:tag` o `repositorio:tag`|
+| `docker images --no-trunc` | Muestra la información completa sin recortar los identificadores ni los valores largos |
+| `docker pull <imagen>:<tag>` | Descarga una imagen (remota) desde un registro |
 | `docker push <imagen>` | Sube una imagen a un registro |
 | `docker tag <imagen> <nuevo_nombre:tag>` | Etiqueta una imagen local |
-| `docker rmi <imagen>` | Elimina una imagen |
+| `docker rmi <id_imagen>` | Elimina una imagen |
 | `docker image prune` | Elimina imágenes no utilizadas |
 | `docker save -o <archivo.tar> <imagen>` | Guarda una imagen en un archivo tar |
 | `docker load -i <archivo.tar>` | Carga una imagen desde un archivo tar |
 | `docker history <imagen>` | Muestra el historial de capas de una imagen |
 | `docker search <término>` | Busca una imagen en Docker Hub |
 
-## Contenedores
+
+## Contenedores <a id="contenedores"></a>
 
 | Comando | Descripción |
 |---|---|
@@ -28,6 +31,7 @@
 | `docker create <imagen>` | Crea un contenedor sin iniciarlo |
 | `docker start <nombre/id>` | Inicia un contenedor detenido |
 | `docker stop <nombre/id>` | Detiene un contenedor en ejecución |
+| `docker stop $(docker ps -q)` | Detiene todos los contenedores activos  |
 | `docker restart <nombre/id>` | Reinicia un contenedor |
 | `docker pause` / `docker unpause` | Pausa / reanuda los procesos de un contenedor |
 | `docker kill <nombre/id>` | Fuerza la detención de un contenedor |
@@ -36,7 +40,8 @@
 | `docker ps` | Lista contenedores en ejecución |
 | `docker ps -a` | Lista todos los contenedores (incluyendo detenidos) |
 
-## Inspección y diagnóstico
+
+## Inspección y diagnóstico  <a id="inspeccion-y-diagnostico"></a>
 
 | Comando | Descripción |
 |---|---|
@@ -54,7 +59,8 @@
 | `docker info` | Información general del sistema Docker |
 | `docker version` | Versión de Docker |
 
-## Copia e import/export
+
+## Copia e import/export  <a id="copia-import-export"></a>
 
 | Comando | Descripción |
 |---|---|
@@ -63,7 +69,8 @@
 | `docker import archivo.tar` | Crea una imagen a partir de un tar exportado |
 | `docker commit <nombre/id> <nueva_imagen>` | Crea una imagen a partir de los cambios de un contenedor |
 
-## Redes
+
+## Redes <a id="redes"></a>
 
 | Comando | Descripción |
 |---|---|
@@ -74,14 +81,19 @@
 | `docker network inspect <red>` | Detalles de una red |
 | `docker network rm <red>` | Elimina una red |
 
-## Volúmenes
+
+## Volúmenes <a id="volumenes"></a>
 
 | Comando | Descripción |
 |---|---|
-| `docker volume create <nombre>` | Crea un volumen |
+| `docker volume create <nombre>` | Crea un volumen persistente |
 | `docker volume ls` | Lista los volúmenes |
+| `docker run -v <volumen>:<ruta_contenedor> <imagen>` | Monta (conecta) un volumen persistente en una ruta interna del contenedor |
+| `docker run --mount source=<volumen>,target=<ruta_contenedor> <imagen>` | Alternativa explícita a `-v` para montar el volumen |
+| `docker run -v $(pwd)/datos:/var/lib/mysql mysql` __o__ <br> `docker run --mount type=bind,source="$(pwd)/datos",target=/var/lib/mysql mysql` | (_Bind mount_) Monta un directorio local de la máquina host en el contenedor.<br> *`$(pwd)` resuelve la ruta absoluta de la carpeta donde estas en tu terminal  **+**  `/datos`*  y<br>  *`/var/lib/mysql` es la ruta interna dentro del contenedor donde MySQL almacena sus tablas y registros* |
 | `docker volume inspect <nombre>` | Detalles de un volumen |
 | `docker volume rm <nombre>` | Elimina un volumen |
+
 
 ## Registro (login)
 
@@ -89,6 +101,7 @@
 |---|---|
 | `docker login` | Inicia sesión en un registro |
 | `docker logout` | Cierra sesión de un registro |
+
 
 ## Limpieza del sistema
 
@@ -100,14 +113,17 @@
 | `docker image prune` | Elimina imágenes sin uso |
 | `docker volume prune` | Borra permanentemente los datos de cualquier volumen que no esté referenciado por al menos un contenedor (activo o detenido). Antes de correrlo, confirma con ```docker volume ls -f dangling=true``` cuáles se van a borrar. |
 
-## Docker Compose
+
+## Docker Compose <a id="compose"></a>
 
 | Comando | Descripción |
 |---|---|
 | `docker compose up -d` | Construye/crea/inicia todos los servicios en segundo plano |
 | `docker compose down` | Detiene y elimina contenedores, redes y volúmenes del proyecto |
-| `docker compose logs -f` | Logs unificados en tiempo real de todos los servicios |
+| `docker compose logs -f` | Logs unificados en tiempo real de todos los servicios definidos en el `docker-compose.yml` |
+| `docker compose logs -f <servicio>` | Sigue los logs en tiempo real unicamente del servicio indicado |
 
+El flag `-f` (follow) funciona igual que `tail -f`: mantiene la terminal abierta transmitiendo nuevos logs en tiempo real hasta pulsar _Ctrl + C_.
 
 ## Referencia
 

@@ -19,6 +19,8 @@ COPY . .
 
 # Exponer el puerto que la aplicación usa, por ejemplo el default de nginx:
 EXPOSE 80
+# Nota: Nginx ya incluye por defecto el comando para iniciar el servidor
+# CMD ["nginx", "-g", "daemon off;"]
 
 # CMD no es necesario: la imagen base "nginx:latest" ya define
 # su propio CMD (arranca nginx en primer plano). Si no pones

@@ -1,23 +1,108 @@
 # Docker
-Crear, desplegar, ejecutar y gestionar aplicaciones dentro de contenedores. Los __contenedores__ son entornos ligeros y portátiles que encapsulan el código de una aplicación junto con todas sus dependencias, asegurando que se ejecuten de manera consistente en diferentes sistemas.
+Plataforma de código abierto diseñada para crear, desplegar, ejecutar y gestionar aplicaciones dentro de contenedores. Los __contenedores__ son entornos ligeros y portátiles que encapsulan el código de una aplicación junto con todas sus dependencias, asegurando que se ejecuten de manera consistente en diferentes sistemas.
+
+$$\text{Sistema Host} \supset \text{Contenedor} \supset \{\text{Capa Efímera (R/W)}, \text{Imagen (R/O)}, \text{Procesos (PID 1)}\}$$
+
 
 ## Contenedores
-Instancia en ejecución de una imagen. Es la imagen con su propio sistema de archivos y procesos, aislado del host.
+
+Instancia en ejecución y mutable de una imagen. Representa un entorno aislado del host con su propio árbol de procesos, sistema de archivos de escritura efímero (overlay), interfaces de red y variables de entorno.
+
+- __Ciclo de vida__: created, running, paused, exited y removed.
+
+- __Capa de lectura y escritura__: Cuando el contenedor arranca, Docker añade una capa ligera de escritura (container layer) sobre las capas de solo lectura de la imagen. Todos los cambios temporales (creación de ficheros de log, temporales, etc.) residen aquí hasta que el contenedor se destruye.
+
+- [Comandos esenciales](comandos.md#contenedores):
 
 
-## Imagenes
-Plantilla de solo lectura con el código, dependencias y configuración de una app.
-- Local (descargadas)
-- Hub   (remotas)
-- Artifactory (colecciones docker scout)
+
+## Imágenes
+
+Plantilla inmutable (de solo lectura) compuesta por una secuencia de capas superpuestas que contienen el sistema base, las dependencias, configuraciones y el binario de la aplicación. Cuando tienen exactamente el mismo ID, son la misma imagen en disco (sin ocupar doble espacio), solo que etiquetada con dos nombres distintos.
+
+- Tipos de almacenamiento y registries:
+
+    - __Local__: Imágenes descargadas o construidas presentes en el almacenamiento local del host (`docker images`).
+
+    - __Docker Hub__: Registro público oficial por defecto para distribuir y descargar imágenes comunitarias y oficiales (`library/node`, `library/mariadb`).
+
+    - __Private Registries / Artifactory__: Servidores privados para almacenar artefactos de la empresa (JFrog Artifactory, AWS ECR, GCP Artifact Registry, GitHub Packages).
+
+    - __Docker Scout__: Herramienta integrada para análisis de seguridad, inspección de dependencias (SBOM) y detección de vulnerabilidades (CVEs) en las imágenes.
+
+    - [Comandos esenciales](comandos.md#imagenes):
 
 
-## Volumenes
-Almacenamiento persistente accesibles por el OS e imagenes de docker, fuera del ciclo de vida del contenedor.
+
+## Volúmenes
+
+Mecanismo principal para almacenar datos de forma persistente, accesibles por el OS e imagenes de docker, independiente del ciclo de vida de los contenedores. Los datos guardados en la capa del contenedor se pierden al destruirlo; los volúmenes evitan esta pérdida.
+
+- Estrategias de almacenamiento:
+
+    - __Named Volumes__ (`docker volume`): Gestionados directamente por Docker dentro del directorio del daemon (`/var/lib/docker/volumes/`). Es la opción recomendada para bases de datos (MariaDB, PostgreSQL, MySQL) por su rendimiento y seguridad.
+
+    - __Bind Mounts__: Mapeo directo de un directorio o fichero del host hacia el contenedor (ej. `-v $(pwd):/app`). Ideal en desarrollo local para reflejar cambios de código en caliente sin reconstruir la imagen.
+
+    - __tmpfs__: Almacenamiento no persistente alojado directamente en la memoria RAM del host; útil para datos sensibles o caché temporal de alto rendimiento.
+
+    - [Comandos esenciales](comandos.md#volumenes):
+
 
 
 ## Builds
-Proceso de construir una imagen a partir de un Dockerfile (docker build). Cada instrucción del Dockerfile crea una capa; el resultado final es la imagen lista para correr. 
+
+Proceso de empaquetar una aplicación dentro de una _imagen_ ejecutable mediante un fichero descriptivo llamado _Dockerfile_. Cada instrucción del _Dockerfile_ crea una capa; el resultado final es la imagen lista para correr. 
+
+- Instrucciones clave del Dockerfile:
+
+    - __FROM__: Define la imagen base (ej. node:22-alpine, php:8.3-fpm).
+
+    - __WORKDIR__: Establece el directorio de trabajo relativo dentro del contenedor.
+
+    - __COPY / ADD__: Copia ficheros del contexto local al sistema de archivos de la imagen.
+
+    - __RUN__: Ejecuta comandos durante el proceso de construcción (instalar paquetes, compilar dependencias). Crea una nueva capa de caché.
+
+    - __ENV / ARG__: Variables de entorno para ejecución y argumentos para la compilación respectivamente.
+
+    - __EXPOSE__: Documenta los puertos de red en los que la aplicación escucha.
+
+    - __ENTRYPOINT / CMD__: Especifica el ejecutable principal y sus argumentos por defecto al arrancar el contenedor.
+
+- [Comandos esenciales ```docker build```](comandos.md#volumenes):
+
+
+
+## Redes (Networks)
+
+Mecanismo de aislamiento y comunicación entre contenedores o entre contenedores y el exterior.
+
+- Drivers de red comunes:
+
+    - __bridge__ (por defecto): Red virtual privada dentro del host. Permite resolución automática de DNS por nombre de contenedor cuando se usan redes bridge definidas por el usuario.
+
+    - __host__: Elimina el aislamiento de red entre el contenedor y el host (usa directamente los puertos del sistema anfitrión).
+
+    - __none__: Desactiva todo acceso a la red para el contenedor.
+
+    - __overlay__: Red distribuida entre múltiples hosts físicos o virtuales (usado en Docker Swarm o clusters).
+
+- [Comandos esenciales](comandos.md#redes):
+
+
+
+## Docker Compose
+
+Herramienta declarativa para definir y ejecutar aplicaciones Docker de múltiples contenedores mediante un archivo _docker-compose.yml_.
+
+- Orquesta servicios complementarios (ej. frontend en Node, backend en PHP, base de datos MariaDB y servidor SMTP de pruebas como Mailpit).
+
+- Crea de forma automática una red compartida y volúmenes declarados para intercomunicar los servicios usando sus nombres como alias de red.
+
+- [Comandos esenciales](comandos.md#compose):
+
+
 
 
 
