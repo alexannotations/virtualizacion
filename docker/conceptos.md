@@ -12,7 +12,7 @@ Instancia en ejecución y mutable de una imagen. Representa un entorno aislado d
 
 - __Capa de lectura y escritura__: Cuando el contenedor arranca, Docker añade una capa ligera de escritura (container layer) sobre las capas de solo lectura de la imagen. Todos los cambios temporales (creación de ficheros de log, temporales, etc.) residen aquí hasta que el contenedor se destruye.
 
-- [Comandos esenciales](comandos.md#contenedores):
+- [Comandos esenciales](comandos.md#contenedores)
 
 
 
@@ -30,23 +30,50 @@ Plantilla inmutable (de solo lectura) compuesta por una secuencia de capas super
 
     - __Docker Scout__: Herramienta integrada para análisis de seguridad, inspección de dependencias (SBOM) y detección de vulnerabilidades (CVEs) en las imágenes.
 
-    - [Comandos esenciales](comandos.md#imagenes):
+    - [Comandos esenciales](comandos.md#imagenes)
 
 
 
-## Volúmenes
+## Almacenamiento en Docker
 
-Mecanismo principal para almacenar datos de forma persistente, accesibles por el OS e imagenes de docker, independiente del ciclo de vida de los contenedores. Los datos guardados en la capa del contenedor se pierden al destruirlo; los volúmenes evitan esta pérdida.
+Por defecto, los datos generados dentro de un contenedor se escriben en su capa de lectura/escritura (R/W) y **se destruyen permanentemente al eliminar el contenedor**. Para desacoplar los datos del ciclo de vida del contenedor y lograr persistencia o alto rendimiento, Docker provee tres mecanismos de almacenamiento:
 
-- Estrategias de almacenamiento:
+| Tipo | ¿Dónde se almacena? | Persistente tras `docker rm` | Caso de uso principal |
+| :--- | :--- | :---: | :--- |
+| **Named Volume** | `/var/lib/docker/volumes/` | Sí | Bases de datos y almacenamiento de producción |
+| **Anonymous Volume** | `/var/lib/docker/volumes/` | Sí (requiere limpieza) | Datos temporales declarados por la imagen |
+| **Bind Mount** | Cualquier ruta del host | Sí | Código fuente en desarrollo y configs |
+| **tmpfs Mount** | Memoria RAM del host | No | Secretos en memoria y cachés efímeras |
 
-    - __Named Volumes__ (`docker volume`): Gestionados directamente por Docker dentro del directorio del daemon (`/var/lib/docker/volumes/`). Es la opción recomendada para bases de datos (MariaDB, PostgreSQL, MySQL) por su rendimiento y seguridad.
+### 1. Volúmenes administrados (*Docker Volumes*)
+Es el mecanismo principal y recomendado para persistencia (bases de datos como MySQL, MariaDB, PostgreSQL o MongoDB). Son gestionados directamente por el daemon de Docker y se almacenan en una ruta interna protegida del host (`/var/lib/docker/volumes/`), lo que evita que procesos externos o usuarios modifiquen accidentalmente su contenido.
 
-    - __Bind Mounts__: Mapeo directo de un directorio o fichero del host hacia el contenedor (ej. `-v $(pwd):/app`). Ideal en desarrollo local para reflejar cambios de código en caliente sin reconstruir la imagen.
+Se dividen en dos tipos según su definición:
 
-    - __tmpfs__: Almacenamiento no persistente alojado directamente en la memoria RAM del host; útil para datos sensibles o caché temporal de alto rendimiento.
+* **Volúmenes Nombrados (*Named Volumes*):**
+  * Tienen un identificador explícito definido por el usuario (ej. `-v db_datos:/var/lib/mysql` o `docker volume create db_datos`).
+  * Son reutilizables y fácilmente referenciables por múltiples contenedores al mismo tiempo o sucesivamente.
+  * No se eliminan accidentalmente al destruir contenedores.
 
-    - [Comandos esenciales](comandos.md#volumenes):
+* **Volúmenes Anónimos (*Anonymous Volumes*):**
+  * Se generan cuando no se define un nombre de origen (ej. `-v /var/lib/mysql`) o cuando el `Dockerfile` incluye la instrucción `VOLUME`.
+  * Docker les asigna un identificador aleatorio (hash de 64 caracteres).
+  * Aunque persisten tras detener el contenedor, son difíciles de rastrear y reutilizar por otros servicios, acumulándose fácilmente como datos huérfanos si no se eliminan con `docker rm -v`.
+
+
+### 2. Montajes vinculados (*Bind Mounts*)
+* Mapean de forma directa un archivo o directorio específico del sistema anfitrión hacia el contenedor (ej. `-v /srv/app:/var/www/html` o `-v $(pwd):/app`).
+* **Ventajas:** Ideales en entornos de desarrollo local para reflejar cambios de código en caliente (*hot-reloading*) o para inyectar archivos de configuración estáticos (`nginx.conf`, credenciales locales).
+* **Desventajas:** Dependen rígidamente de la estructura de carpetas y los permisos de usuario (`UID/GID`) del sistema operativo host, reduciendo la portabilidad entre servidores.
+
+
+### 3. Montajes en memoria RAM (*tmpfs Mounts*)
+* Almacenamiento volátil que reside exclusivamente en la memoria RAM del sistema anfitrión (ej. `--tmpfs /app/cache`).
+* Los datos **nunca se escriben en el disco** y se destruyen tan pronto como el contenedor se detiene.
+* **Casos de uso:** Manejo de información sensible (claves secretas de corta duración, tokens) o cachés temporales que exigen latencia mínima de lectura/escritura.
+
+
+- [Comandos esenciales](comandos.md#volumenes)
 
 
 
@@ -70,7 +97,7 @@ Proceso de empaquetar una aplicación dentro de una _imagen_ ejecutable mediante
 
     - __ENTRYPOINT / CMD__: Especifica el ejecutable principal y sus argumentos por defecto al arrancar el contenedor.
 
-- [Comandos esenciales ```docker build```](comandos.md#volumenes):
+- [Comandos esenciales ```docker build```](comandos.md#volumenes)
 
 
 
@@ -88,7 +115,7 @@ Mecanismo de aislamiento y comunicación entre contenedores o entre contenedores
 
     - __overlay__: Red distribuida entre múltiples hosts físicos o virtuales (usado en Docker Swarm o clusters).
 
-- [Comandos esenciales](comandos.md#redes):
+- [Comandos esenciales](comandos.md#redes)
 
 
 
@@ -100,7 +127,7 @@ Herramienta declarativa para definir y ejecutar aplicaciones Docker de múltiple
 
 - Crea de forma automática una red compartida y volúmenes declarados para intercomunicar los servicios usando sus nombres como alias de red.
 
-- [Comandos esenciales](comandos.md#compose):
+- [Comandos esenciales](comandos.md#compose)
 
 
 

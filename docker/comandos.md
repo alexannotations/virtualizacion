@@ -5,8 +5,8 @@
 
 | Comando | Descripción |
 |---|---|
-| `docker build -t <nombre:tag> .` | Construye una imagen desde un Dockerfile en la carpeta actual |
-| `docker build -t <nombre:tag> . --no-cache` | Construye sin usar la caché |
+| `docker build -t <nombre:tag> .` | Construir una nueva imagen de Docker a partir de un archivo de instrucciones _Dockerfile_ y empaquetarla bajo un nombre y versión específicos en la carpeta actual |
+| `docker build -t <nombre:tag> . --no-cache` | Construye una imagen con `--tag` sin usar la caché |
 | `docker images` | Lista las imágenes locales |
 | `docker images --filter=reference='*/*:*' --filter=reference='*:*'` | Filtra la lista de imagenes locales segun el criterio `usuario/repositorio:tag` o `repositorio:tag`|
 | `docker images --no-trunc` | Muestra la información completa sin recortar los identificadores ni los valores largos |
@@ -25,10 +25,11 @@
 
 | Comando | Descripción |
 |---|---|
-| `docker run --name <nombre> <imagen>` | Crea y ejecuta un contenedor a partir de una imagen y le asigna un nombre personalizado |
-| `docker run -d <imagen>` | Ejecuta en segundo plano (detached) |
+| `docker run --name <contenedor_nombre> <imagen>` | Crea y ejecuta un contenedor a partir de una imagen y le asigna un nombre personalizado |
+| `docker run -d <imagen>` | Descarga una imagen (de no existir) y crea un contenedor, ejecutandolo en segundo plano (detached) |
 | `docker run -p <puerto_host>:<puerto_cont> <imagen>` | Publica un puerto del contenedor al host |
-| `docker create <imagen>` | Crea un contenedor sin iniciarlo |
+| `docker create <imagen>` | Crea un contenedor sobre la imagen indicada sin iniciarlo |
+| `docker create --name <nombre_contenedor> <imagen>` | Crea un contenedor sobre la `<imagen>` indicada pero con el nombre especificado en el parámetro `<nombre_contenedor>` |
 | `docker start <nombre/id>` | Inicia un contenedor detenido |
 | `docker stop <nombre/id>` | Detiene un contenedor en ejecución |
 | `docker stop $(docker ps -q)` | Detiene todos los contenedores activos  |
@@ -46,7 +47,7 @@
 | Comando | Descripción |
 |---|---|
 | `docker system df -v` | Desglose completo, incluyendo el tamaño de cada volumen |
-| `docker logs <nombre/id>` | Muestra los logs de un contenedor |
+| `docker logs <contenedor_nombre/id>` | Muestra los logs de un contenedor, el historial actual y finaliza de inmediato |
 | `docker logs -f <nombre/id>` | Sigue los logs en tiempo real |
 | `docker exec -it <nombre/id> bash` | Abre una shell interactiva (usa `sh` si `bash` no existe) |
 | `docker attach <nombre/id>` | Conecta la terminal actual a un contenedor en ejecución |
@@ -74,8 +75,8 @@
 
 | Comando | Descripción |
 |---|---|
-| `docker network ls` | Lista las redes |
-| `docker network create <nombre>` | Crea una red |
+| `docker network ls` | Lista las redes de contenedores existentes |
+| `docker network create <nombre_red>` | Crea una red de contenedores |
 | `docker network connect <red> <contenedor>` | Conecta un contenedor a una red |
 | `docker network disconnect <red> <contenedor>` | Desconecta un contenedor de una red |
 | `docker network inspect <red>` | Detalles de una red |
@@ -118,9 +119,11 @@
 
 | Comando | Descripción |
 |---|---|
-| `docker compose up -d` | Construye/crea/inicia todos los servicios en segundo plano |
-| `docker compose down` | Detiene y elimina contenedores, redes y volúmenes del proyecto |
-| `docker compose logs -f` | Logs unificados en tiempo real de todos los servicios definidos en el `docker-compose.yml` |
+| `docker compose up -d` | Construye/crea/inicia todos los servicios en segundo plano definidos en el archivo _docker-compose.yml_ |
+| `docker compose -f <archivo> up` | Inicia los servicios utilizando un archivo Compose con nombre o ruta personalizada, en lugar del predeterminado _docker-compose.yml_ |
+| `docker compose down` | Detiene y elimina contenedores y redes creadas por el proyecto (Conserva los volúmenes con nombre (named volumes), montajes vinculados (bind mounts) y las imágenes descargadas/construidas) |
+| `docker compose down -v` | Detiene y elimina contenedores, redes y volúmenes asociados al proyecto.
+| `docker compose logs -f` | Logs unificados en tiempo real de todos los servicios definidos en el _docker-compose.yml_ |
 | `docker compose logs -f <servicio>` | Sigue los logs en tiempo real unicamente del servicio indicado |
 
 El flag `-f` (follow) funciona igual que `tail -f`: mantiene la terminal abierta transmitiendo nuevos logs en tiempo real hasta pulsar _Ctrl + C_.
