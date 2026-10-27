@@ -43,21 +43,22 @@ _Ejemplo de como hacer la dockerización:_
 
 - _Dockerfile_: Es el punto inicial del proceso, el archivo crea una imagen.
 
-- _Image_: ejecutar el comando ```docker build -t <nombre:tag> <path_to_Dockerfile>```, (una sola vez) ejecuta las instrucciones del _Dockerfile_ (RUN, COPY, ADD, etc.) y va creando capas con el resultado. Al final obtienes una ___Docker image___ ya armada. Si se modifica el _Dockerfile_, debe volver a hacer ```docker build``` para que los cambios se reflejen en una nueva imagen.
+- _Image_: ejecutar el comando ```docker build -t <nombre:tag> <path_to_Dockerfile>```, (una sola vez) ejecuta las instrucciones del _Dockerfile_ (_RUN_, _COPY_, _ADD_, etc.) y va creando capas con el resultado. Al final obtienes una ___Docker image___ ya armada. Si se modifica el _Dockerfile_, debe volver a hacer ```docker build``` para que los cambios se reflejen en una nueva imagen.
 
 - _Container_: con el comando ```docker run```, (arranca) se despliega la _imagen_ ya construida creando un ___Docker container___ **nuevo** cada vez (```docker run``` = ```docker create``` + ```docker start```). Ejecuta el proceso definido en _CMD_ o _ENTRYPOINT_, es lo único que corre en cada _run_.
 
 
-    En el ejemplo
-    ```bash
-    # Construye una imagen con <name>:<tag> desde un Dockerfile en la carpeta actual
-    docker build -t mi-image-nginx:test .
+    En el ejemplo:
+    
+    Construye una imagen con _<name>:<tag>_ desde un Dockerfile en la carpeta actual
 
-    # Crea y ejecuta un contenedor con una sesión interactiva, borra automáticamente el contenedor (no la imagen) en cuanto termine de ejecutarse, mapeando puertos <host_destino>:<docker_port> a partir de una imagen <docker-image-name> y le asigna un nombre personalizado <docker-container-name>
-    docker run -it --rm -p 8080:80 --name container-app1 mi-image-nginx:test
+    ```    docker build -t mi-image-nginx:test .    ```
 
-    curl http://localhost:8080
-    ```
+    Crea y ejecuta un contenedor con una sesión interactiva, borra automáticamente el contenedor (no la imagen) en cuanto termine de ejecutarse, mapeando puertos _<host_destino>:<docker_port>_ a partir de una imagen _<docker-image-name>_ y le asigna un nombre personalizado _<docker-container-name>_
+
+    ```    docker run -it --rm -p 8080:80 --name container-app1 mi-image-nginx:test    ```
+
+    ```    curl http://localhost:8080    ```
 
 
 
@@ -71,12 +72,7 @@ Cuando varios contenedores de docker dentro de una misma red interna de docker n
 
 Por ejemplo; cuando una app funciona en un contenedor y el manejador de BD MongoDB en otro contenedor en la misma red de contenedores, la forma en la que se debe hacer referencia en el URI para acceder a la BD debe ser, el nombre del contenedor que hace referencia a mongodb en vez de localhost, en este caso seria de esta forma:
 
-```jsx
-    {
-        "mongodb://user:password@nombre_contenedorhost:27017/";
-    }
-
-```
+```    "mongodb://user:password@nombre_contenedorhost:27017/";     ```
 
 
 

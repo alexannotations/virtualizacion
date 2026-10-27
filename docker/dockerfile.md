@@ -10,7 +10,7 @@ WORKDIR /usr/share/nginx/html
 # Copia el archivo de configuración del paquete:
 COPY comandos.md .
 
-# ejecutar comandos, como Instalar las dependencias necesarias:
+# ejecutar comandos, e.g. Instalar las dependencias necesarias:
 RUN uname -a
 
 # Copia los archivos de aplicación al contenedor
