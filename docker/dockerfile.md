@@ -68,7 +68,7 @@ Es común confundir estas tres directivas:
 | **`CMD`** | Durante el **Run** (inicio del contenedor) | Proporciona el comando o argumentos por defecto al arrancar. Fácil de sobreescribir al hacer `docker run`. | `CMD ["nginx", "-g", "daemon off;"]` |
 | **`ENTRYPOINT`** | Durante el **Run** (inicio del contenedor) | Define el ejecutable principal inmutable del contenedor. Los argumentos de `CMD` pasan como parámetros de `ENTRYPOINT`. | `ENTRYPOINT ["docker-entrypoint.sh"]` |
 
-> 📌 **Nota sobre Nginx:** La imagen oficial `nginx` ya define internamente su propio `CMD ["nginx", "-g", "daemon off;"]`. No es necesario volver a escribirlo a menos que necesites parámetros especiales.
+> **Nota sobre Nginx:** La imagen oficial `nginx` ya define internamente su propio `CMD ["nginx", "-g", "daemon off;"]`. No es necesario volver a escribirlo a menos que necesites parámetros especiales.
 
 ### 5. `EXPOSE`
 * **Propósito:** Documenta qué puertos de red escucha el contenedor al ejecutarse.
@@ -76,7 +76,7 @@ Es común confundir estas tres directivas:
 
 ---
 
-## ⚠️ Volúmenes: `VOLUME` vs `Bind Mounts`
+## Volúmenes: `VOLUME` vs `Bind Mounts`
 
 Un punto clave de confusión al escribir un `Dockerfile`:
 
