@@ -25,7 +25,7 @@ docker run -d --name mi-api-flask -p 5000:5000 test-flask-api:1.0
 
 
 # Orquestado con Docker Compose
-Ideal si esta API se va a conectar con una base de datos o integrarla en un flujo de despliegue continuo.
+Ideal si esta API se va a conectar con una base de datos o integrarla en un flujo de despliegue continuo. NO incluido en este ejemplo.
 
 - Crea un archivo _docker-compose.yml_:
 

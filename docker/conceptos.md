@@ -192,3 +192,7 @@ Mientras que la pestaña __Models__ te da el modelo de IA, el __MCP Toolkit__ te
     - PostgreSQL: Para conectarse a una base de datos.
 - My servers: Las herramientas del catálogo que has decidido instalar y ejecutar.
 - Clients: Aplicaciones (como Claude Code o Codex) que puedes conectar a tus servidores para construir un flujo de trabajo de IA.
+
+
+
+[dockerdocs](https://docs.docker.com/)
