@@ -1,6 +1,6 @@
 # Docker Nginx con Bind Mount
 
-Levanta un servidor web Nginx en segundo plano utilizando el directorio local actual (`pwd`) _Print Working Directory_ como raíz de los archivos web servidos, mapeando el puerto `8080` del host al puerto `80` del contenedor.
+Levanta un servidor web Nginx en segundo plano utilizando el directorio local actual (`pwd`) _Print Working Directory_ como raíz de los archivos web servidos, mapeando el puerto `8080` del host al puerto `80` del contenedor. Observe que no existe _Dockerfile_ porque llama a una _imagen_ pública del repositorio web.
 
 
 ```bash
@@ -11,6 +11,15 @@ docker run -it --rm -d \
   nginx
 ```
 
+Si el contenedor ya existe, lo puedes iniciar:
+```bash
+docker start web-example
+```
+
+Para forzar la eliminación del contenedor existente:
+```bash
+docker rm -f web-example
+```
 
 
 | Parámetro | Significado | Función en este comando |

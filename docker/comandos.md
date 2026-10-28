@@ -49,7 +49,7 @@
 | `docker system df -v` | Desglose completo, incluyendo el tamaño de cada volumen |
 | `docker logs <contenedor_nombre/id>` | Muestra los logs de un contenedor, el historial actual y finaliza de inmediato |
 | `docker logs -f <nombre/id>` | Sigue los logs en tiempo real |
-| `docker exec -it <nombre/id> bash` | Abre una shell interactiva en el contenedor (usa `sh` si `bash` no existe) |
+| `docker exec -it <nombre/id> bash` | Entra a un contenedor existente en ejecucion por una shell interactiva en el contenedor (usa `sh` si `bash` no existe) |
 | `docker attach <nombre/id>` | Conecta la terminal actual a un contenedor en ejecución |
 | `docker inspect <nombre/id>` | Muestra información detallada del objeto (contenedor o imagen) |
 | `docker stats` | Uso de CPU, RAM y red en tiempo real de todos los contenedores |

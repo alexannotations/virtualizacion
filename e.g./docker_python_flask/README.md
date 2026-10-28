@@ -4,7 +4,7 @@ Consultar el endpoint: `curl http://127.0.0.1:5000/getmyinfo`
 
 # Contenedor con Docker directo
 
-Aisla las dependencias en una imagen autónoma sin necesidad de instalar Python ni librerías en el host.
+El contenedor permite aislar las dependencias en una imagen autónoma sin necesidad de instalar Python ni librerías en el host. Para empaquetar y construir requerimos:
 
 - Crear un archivo [_Dockerfile_](Dockerfile) en la misma carpeta:
 

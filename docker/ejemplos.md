@@ -8,4 +8,15 @@
 | `docker build -t <user_name>/<nombre_imagen>:<tag> .` | Etiquetar imagen correctamente |
 | `docker push <user_name>/<nombre_imagen>:<tag>` | Subir la imagen al repositorio |
 | `docker run <user_name>/<nombre_imagen>:<tag>` | Descargar imagen de dockerhub |
+| `docker build -t mi-app:v1 .` | Construye una imagen etiquetada como `mi-app:v1` usando el archivo _Dockerfile_ del directorio actual |
+| `docker run -d -p 8080:80 --name web mi-app:v1` | Instancia y arranca un contenedor nuevo llamado `web` a partir de la imagen creada `mi-app:v1` |
+| `docker exec -it web bash` | Entra a una terminal interactiva dentro del contenedor `web` que ya está corriendo |
+| `docker start web` | Si el contenedor fue apagado con `docker stop web`, se vuelve a levantar sin reconfigurar puertos ni volúmenes |
+| `docker compose up -d --build` | El equivalente todo-en-uno, levanta toda la arquitectura, es decir todos los servicios definidos en el _YAML_ y sus dependencias de red (Build si hace falta + Run en segundo plano) |
+| `docker compose run web <comando>` | Se usa solo para tareas puntuales y aisladas (por ejemplo, correr migraciones de base de datos o tests) creando un contenedor temporal específico |
+| `docker compose exec web sh` | Entrar a la terminal del servicio activo (equivalente a docker exec) |
+| `docker compose stop` | Pausar temporalmente (equivalente a docker stop) |
+| `docker compose start` | Reactivar sin reconstruir (equivalente a docker start) |
+| `docker compose down` | Destruir y limpiar contenedores/redes (equivalente a docker rm -f) |
+| `` |  |
 
